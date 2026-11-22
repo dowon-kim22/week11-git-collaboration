@@ -38,7 +38,7 @@ from sklearn.metrics import f1_score, accuracy_score
 # 1. DecisionTree 하이퍼파라미터 후보 설정
 dt_param_grid = {
     'criterion': ['gini', 'entropy'],
-    'max_depth': [5, 10],
+    'max_depth': [5, 10, 15],
     'min_samples_leaf': [1, 5, 20]
 }
 
