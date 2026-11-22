@@ -32,6 +32,47 @@ print(X_train.shape, X_test.shape)
 
 ''' 코드 작성 바랍니다 '''
 
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import f1_score, accuracy_score
+
+# 1. DecisionTree 하이퍼파라미터 후보 설정
+dt_param_grid = {
+    'criterion': ['gini', 'entropy'],
+    'max_depth': [5, 10],
+    'min_samples_leaf': [1, 5, 20]
+}
+
+# 2. GridSearchCV로 최적 하이퍼파라미터 탐색
+dt_grid = GridSearchCV(
+    estimator=DecisionTreeClassifier(random_state=42),
+    param_grid=dt_param_grid,
+    scoring='f1',
+    cv=5,
+    n_jobs=-1
+)
+
+dt_grid.fit(X_train, y_train)
+
+# 3. 최적 파라미터 및 성능 확인
+dt_model = dt_grid.best_estimator_
+dt_pred = dt_model.predict(X_test)
+
+print("DecisionTree 최적 파라미터:", dt_grid.best_params_)
+print("DecisionTree F1 score:", f1_score(y_test, dt_pred))
+print("DecisionTree Accuracy:", accuracy_score(y_test, dt_pred))
+
+# 4. Feature Importance 상위 10개 시각화
+dt_importance = pd.Series(
+    dt_model.feature_importances_,
+    index=X_train.columns
+).sort_values(ascending=False).head(10)
+
+plt.figure(figsize=(10, 6))
+dt_importance.sort_values().plot(kind='barh')
+plt.title('DecisionTree Feature Importance Top 10')
+plt.xlabel('Feature Importance')
+plt.tight_layout()
+plt.show()
 
 ####### B 작업자 작업 수행 #######
 
